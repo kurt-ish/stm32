@@ -141,6 +141,49 @@ drive_dir_t phase_state_drive_direction(void)
     return state.drive_dir;
 }
 
+#define NEXT_PHASE_TABLE
+
+phase_t phase_state_next_phase(phase_t phase, drive_dir_t dir)
+{
+    if(phase == PHASE_UNK) return PHASE_UNK;
+    if(dir == DRIVE_DIR_UNK) return PHASE_UNK;
+    
+#ifdef NEXT_PHASE_TABLE
+    
+#define PHASES_TABLE_SIZE_DIRS 2
+#define PHASES_TABLE_SIZE_PHASES 3
+    static const phase_t next_phase_table[PHASES_TABLE_SIZE_DIRS][PHASES_TABLE_SIZE_PHASES] = {
+        {PHASE_B, PHASE_C, PHASE_A},
+        {PHASE_C, PHASE_A, PHASE_B}
+    };
+    
+    return next_phase_table[dir - 1][phase - 1];
+    
+#undef PHASES_TABLE_SIZE_PHASES
+#undef PHASES_TABLE_SIZE_DIRS
+    
+#else
+    
+    // Обработаем фазу.
+    switch(phase){
+        case PHASE_A:
+            return (dir == DRIVE_DIR_FORW) ? PHASE_B : PHASE_C;
+            break;
+        case PHASE_B:
+            return (dir == DRIVE_DIR_FORW) ? PHASE_C : PHASE_A;
+            break;
+        case PHASE_C:
+            return (dir == DRIVE_DIR_FORW) ? PHASE_A : PHASE_B;
+            break;
+        default:
+            break;
+    }
+    
+    return PHASE_UNK;
+    
+#endif
+}
+
 void phase_state_clear_error(void)
 {
     state.phase_err = PHASE_NO_ERROR;

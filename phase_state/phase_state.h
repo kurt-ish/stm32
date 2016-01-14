@@ -8,16 +8,16 @@
 //! Тип фазы.
 typedef enum _Phase {
     PHASE_UNK = 0,
-    PHASE_A,
-    PHASE_B,
-    PHASE_C
+    PHASE_A = 1,
+    PHASE_B = 2,
+    PHASE_C = 3
 } phase_t;
 
 //! Тип направления.
 typedef enum _DriveDir {
     DRIVE_DIR_UNK = 0,
-    DRIVE_DIR_FORW,
-    DRIVE_DIR_BACKW
+    DRIVE_DIR_FORW = 1,
+    DRIVE_DIR_BACKW = 2
 } drive_dir_t;
 
 //! Тип ошибки.
@@ -60,6 +60,14 @@ extern phase_t phase_sate_current_phase(void);
  * @return Направление.
  */
 extern drive_dir_t phase_state_drive_direction(void);
+
+/**
+ * Получает следующую фазу после заданной при заданном направлении вращения.
+ * @param phase Фаза.
+ * @param dir Направление вращения.
+ * @return Следующая фаза.
+ */
+extern phase_t phase_state_next_phase(phase_t phase, drive_dir_t dir);
 
 /**
  * Сбрасывает ошибку.
